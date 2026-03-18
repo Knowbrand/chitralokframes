@@ -29,14 +29,15 @@ nav{
 /* PRODUCTS */
 .products{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:15px;
 }
 
 .product{
   background:white;
-  padding:15px;
+  padding:12px;
   border-radius:12px;
+  text-align:center;
   transition:0.3s;
 }
 .product:hover{
@@ -45,20 +46,28 @@ nav{
 
 .product img{
   width:100%;
-  height:160px;
+  height:140px;
   object-fit:cover;
   border-radius:10px;
 }
 
-.product h3{margin:10px 0;}
-.product p{color:#555;}
+.product h3{
+  font-size:15px;
+  margin:8px 0;
+}
 
-button{
-  margin-top:10px;
-  padding:10px;
+.product p{
+  font-weight:bold;
+  color:#111;
+}
+
+.product button{
+  margin-top:8px;
+  padding:8px;
+  font-size:13px;
   border:none;
   border-radius:8px;
-  background:#c9b8a6;
+  background:#111;
   color:white;
   cursor:pointer;
   width:100%;
@@ -89,7 +98,7 @@ button{
 /* CHECKOUT */
 .checkout-btn{
   margin-top:15px;
-  background:#111;
+  background:#25D366;
 }
 </style>
 
@@ -111,27 +120,36 @@ button{
   <h3>Your Cart</h3>
   <div id="cartItems"></div>
   <h3>Total: ₹<span id="total">0</span></h3>
-  <button class="checkout-btn" onclick="checkout()">Checkout</button>
+  <button class="checkout-btn" onclick="checkout()">Order on WhatsApp</button>
 </div>
 
 </div>
 
 <script>
 
-/* ✅ LOAD PRODUCTS FROM ADMIN (CMS) */
+/* LOAD PRODUCTS FROM ADMIN */
 let products = JSON.parse(localStorage.getItem("products")) || [];
 
-let cart = [];
+/* LOAD CART (persistent) */
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+/* SAVE CART */
+function saveCart(){
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
 
 /* RENDER PRODUCTS */
 function renderProducts(){
-  let html="";
+  let html = "";
 
   if(products.length === 0){
-    html = "<p>No products added yet. Go to admin panel.</p>";
+    html = "<p>No products available</p>";
   }
 
   products.forEach((p,i)=>{
+
+    let inCart = cart.find(c => c.name === p.name);
+
     html += `
       <div class="product">
         <img src="${p.img}">
@@ -141,7 +159,9 @@ function renderProducts(){
         ${
           p.out
           ? `<button disabled>Out of Stock</button>`
-          : `<button onclick="addToCart(${i})">Add to Cart</button>`
+          : inCart
+            ? `<button onclick="removeFromCart(${i})" style="background:red;">Remove</button>`
+            : `<button onclick="addToCart(${i})">Add to Cart</button>`
         }
       </div>
     `;
@@ -161,7 +181,19 @@ function addToCart(i){
     cart.push({...item, qty:1});
   }
 
+  saveCart();
   renderCart();
+  renderProducts();
+}
+
+/* REMOVE FROM CART */
+function removeFromCart(i){
+  let name = products[i].name;
+  cart = cart.filter(c => c.name !== name);
+
+  saveCart();
+  renderCart();
+  renderProducts();
 }
 
 /* RENDER CART */
@@ -192,20 +224,29 @@ function renderCart(){
   document.getElementById("total").innerText = total;
 }
 
-/* CHANGE QTY */
+/* CHANGE QUANTITY */
 function changeQty(i,val){
   cart[i].qty += val;
-  if(cart[i].qty <= 0) cart.splice(i,1);
+
+  if(cart[i].qty <= 0){
+    cart.splice(i,1);
+  }
+
+  saveCart();
   renderCart();
+  renderProducts();
 }
 
 /* REMOVE ITEM */
 function removeItem(i){
   cart.splice(i,1);
+
+  saveCart();
   renderCart();
+  renderProducts();
 }
 
-/* ✅ WHATSAPP CHECKOUT */
+/* WHATSAPP CHECKOUT */
 function checkout(){
   if(cart.length === 0){
     alert("Cart is empty!");
@@ -222,12 +263,14 @@ function checkout(){
 
   message += `%0A💰 Total: ₹${total}`;
 
-  let phone = "91XXXXXXXXXX"; // 🔴 PUT NUMBER HERE
+  let phone = "91XXXXXXXXXX"; // PUT YOUR NUMBER
 
   window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
 }
 
+/* INIT */
 renderProducts();
+renderCart();
 
 </script>
 
