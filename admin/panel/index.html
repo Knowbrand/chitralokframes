@@ -23,9 +23,7 @@ body{
   margin:20px;
 }
 
-.sidebar h2{
-  margin-bottom:30px;
-}
+.sidebar h2{margin-bottom:30px;}
 
 .sidebar a{
   display:block;
@@ -36,10 +34,7 @@ body{
   text-decoration:none;
   transition:0.3s;
 }
-
-.sidebar a:hover{
-  background:rgba(255,255,255,0.6);
-}
+.sidebar a:hover{background:rgba(255,255,255,0.6);}
 
 /* MAIN */
 .main{
@@ -127,6 +122,7 @@ body{
 
 .stock{background:#c9b8a6;color:white;}
 .delete{background:red;color:white;}
+.edit{background:#4da6ff;color:white;}
 </style>
 
 <script>
@@ -164,11 +160,11 @@ if(sessionStorage.getItem("admin") !== "true"){
 </div>
 
 <div class="form">
-  <h3>Add Product</h3>
+  <h3 id="formTitle">Add Product</h3>
   <input id="name" placeholder="Product Name">
   <input id="price" placeholder="Price">
   <input id="img" placeholder="Image URL">
-  <button onclick="addProduct()">Add</button>
+  <button id="submitBtn" onclick="addProduct()">Add Product</button>
 </div>
 
 <div id="list"></div>
@@ -176,12 +172,16 @@ if(sessionStorage.getItem("admin") !== "true"){
 </div>
 
 <script>
-let products = JSON.parse(localStorage.getItem("products")) || [];
 
+let products = JSON.parse(localStorage.getItem("products")) || [];
+let editIndex = -1;
+
+/* SAVE */
 function save(){
   localStorage.setItem("products", JSON.stringify(products));
 }
 
+/* RENDER */
 function render(){
   let html = "";
   let stock = 0;
@@ -197,6 +197,7 @@ function render(){
         </div>
 
         <div>
+          <button class="edit" onclick="editProduct(${i})">Edit</button>
           <button class="stock" onclick="toggleStock(${i})">Stock</button>
           <button class="delete" onclick="deleteProduct(${i})">Delete</button>
         </div>
@@ -209,9 +210,10 @@ function render(){
   document.getElementById("stockCount").innerText = stock;
 }
 
+/* ADD / UPDATE */
 function addProduct(){
   let name = document.getElementById("name").value;
-  let price = document.getElementById("price").value;
+  let price = Number(document.getElementById("price").value);
   let img = document.getElementById("img").value;
 
   if(!name || !price || !img){
@@ -219,29 +221,66 @@ function addProduct(){
     return;
   }
 
-  products.push({name,price,img,out:false});
+  let product = {name, price, img, out:false};
+
+  if(editIndex === -1){
+    products.push(product);
+  } else {
+    products[editIndex] = product;
+    editIndex = -1;
+  }
+
   save();
   render();
+  clearForm();
 }
 
+/* EDIT */
+function editProduct(i){
+  let p = products[i];
+
+  document.getElementById("name").value = p.name;
+  document.getElementById("price").value = p.price;
+  document.getElementById("img").value = p.img;
+
+  editIndex = i;
+
+  document.getElementById("formTitle").innerText = "Edit Product";
+  document.getElementById("submitBtn").innerText = "Update Product";
+}
+
+/* DELETE */
 function deleteProduct(i){
   products.splice(i,1);
   save();
   render();
 }
 
+/* STOCK TOGGLE */
 function toggleStock(i){
   products[i].out = !products[i].out;
   save();
   render();
 }
 
+/* CLEAR FORM */
+function clearForm(){
+  document.getElementById("name").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("img").value = "";
+
+  document.getElementById("formTitle").innerText = "Add Product";
+  document.getElementById("submitBtn").innerText = "Add Product";
+}
+
+/* LOGOUT */
 function logout(){
   sessionStorage.removeItem("admin");
   window.location.replace("../index.html");
 }
 
 render();
+
 </script>
 
 </body>
