@@ -39,7 +39,13 @@ window.onpopstate = function () {
 </script>
 
 </head>
-
+  
+<script>
+if(sessionStorage.getItem("admin") !== "true"){
+  window.location.replace("../index.html");
+}
+</script>
+  
 <body>
 
 <div class="top">
