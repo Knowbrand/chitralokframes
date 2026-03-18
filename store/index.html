@@ -26,6 +26,14 @@ nav{
   margin-bottom:20px;
 }
 
+.cart-btn{
+  background:#111;
+  color:white;
+  padding:8px 15px;
+  border-radius:8px;
+  text-decoration:none;
+}
+
 /* PRODUCTS */
 .products{
   display:grid;
@@ -58,7 +66,6 @@ nav{
 
 .product p{
   font-weight:bold;
-  color:#111;
 }
 
 .product button{
@@ -72,65 +79,29 @@ nav{
   cursor:pointer;
   width:100%;
 }
-
-/* CART */
-.cart{
-  background:white;
-  padding:15px;
-  border-radius:12px;
-  margin-top:25px;
-}
-
-.cart-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:10px 0;
-  gap:10px;
-}
-
-.controls button{
-  width:auto;
-  padding:5px 10px;
-  margin-left:5px;
-}
-
-/* CHECKOUT */
-.checkout-btn{
-  margin-top:15px;
-  background:#25D366;
-}
 </style>
-
 </head>
+
 <body>
 
 <div class="container">
 
 <nav>
   <h2>Chitralok Store</h2>
-  <a href="../index.html">← Back</a>
+
+  <a href="../cart/index.html" class="cart-btn">
+    View Cart 🛒
+  </a>
 </nav>
 
-<!-- PRODUCTS -->
 <div class="products" id="products"></div>
-
-<!-- CART -->
-<div class="cart">
-  <h3>Your Cart</h3>
-  <div id="cartItems"></div>
-  <h3>Total: ₹<span id="total">0</span></h3>
-  <button class="checkout-btn" onclick="checkout()">Order on WhatsApp</button>
-</div>
 
 </div>
 
 <script>
 
-/* LOAD PRODUCTS FROM ADMIN */
+/* LOAD DATA */
 let products = JSON.parse(localStorage.getItem("products")) || [];
-
-/* LOAD CART (persistent) */
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 /* SAVE CART */
@@ -170,7 +141,7 @@ function renderProducts(){
   document.getElementById("products").innerHTML = html;
 }
 
-/* ADD TO CART */
+/* ADD */
 function addToCart(i){
   let item = products[i];
   let found = cart.find(c => c.name === item.name);
@@ -182,95 +153,20 @@ function addToCart(i){
   }
 
   saveCart();
-  renderCart();
   renderProducts();
 }
 
-/* REMOVE FROM CART */
+/* REMOVE */
 function removeFromCart(i){
   let name = products[i].name;
   cart = cart.filter(c => c.name !== name);
 
   saveCart();
-  renderCart();
   renderProducts();
-}
-
-/* RENDER CART */
-function renderCart(){
-  let html = "";
-  let total = 0;
-
-  cart.forEach((item,i)=>{
-    total += item.price * item.qty;
-
-    html += `
-      <div class="cart-item">
-        <div>
-          ${item.name}<br>
-          ₹${item.price} x ${item.qty}
-        </div>
-
-        <div class="controls">
-          <button onclick="changeQty(${i},1)">+</button>
-          <button onclick="changeQty(${i},-1)">-</button>
-          <button onclick="removeItem(${i})">x</button>
-        </div>
-      </div>
-    `;
-  });
-
-  document.getElementById("cartItems").innerHTML = html;
-  document.getElementById("total").innerText = total;
-}
-
-/* CHANGE QUANTITY */
-function changeQty(i,val){
-  cart[i].qty += val;
-
-  if(cart[i].qty <= 0){
-    cart.splice(i,1);
-  }
-
-  saveCart();
-  renderCart();
-  renderProducts();
-}
-
-/* REMOVE ITEM */
-function removeItem(i){
-  cart.splice(i,1);
-
-  saveCart();
-  renderCart();
-  renderProducts();
-}
-
-/* WHATSAPP CHECKOUT */
-function checkout(){
-  if(cart.length === 0){
-    alert("Cart is empty!");
-    return;
-  }
-
-  let message = "🛒 *New Order - Chitralok Arts*%0A%0A";
-  let total = 0;
-
-  cart.forEach(item => {
-    message += `• ${item.name} x ${item.qty} = ₹${item.price * item.qty}%0A`;
-    total += item.price * item.qty;
-  });
-
-  message += `%0A💰 Total: ₹${total}`;
-
-  let phone = "91XXXXXXXXXX"; // PUT YOUR NUMBER
-
-  window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
 }
 
 /* INIT */
 renderProducts();
-renderCart();
 
 </script>
 
