@@ -3,210 +3,165 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Art Gallery</title>
+<title>Chitralok Store</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-body{background:#e9e6e2;}
+body{background:#f2f2f2;}
 
-.container{
-  max-width:1100px;
-  margin:40px auto;
-  background:#f6f3ef;
-  border-radius:30px;
-  padding:20px;
-  position:relative;
-}
+.container{max-width:1200px;margin:20px auto;}
 
 /* NAV */
-nav{
-  position:absolute;
-  top:20px;
-  left:20px;
-  right:20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:rgba(255,255,255,0.7);
-  backdrop-filter:blur(10px);
-  padding:12px 20px;
-  border-radius:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.08);
-  z-index:10;
-}
-nav ul{display:flex;gap:20px;list-style:none;}
-nav a{text-decoration:none;color:#555;font-size:14px;}
+nav{display:flex;justify-content:space-between;align-items:center;background:white;padding:15px 20px;border-radius:10px;margin-bottom:20px;}
+nav h2{color:#111;}
 
-/* HERO */
-.hero{
-  border-radius:25px;
-  height:350px;
-  background:url('https://images.unsplash.com/photo-1549880181-56a44cf4a9a4') center/cover;
-  display:flex;
-  align-items:center;
-  padding:40px;
-  position:relative;
-}
-.hero::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(255,255,255,0.4);
-  border-radius:25px;
-}
-.hero h1{
-  position:relative;
-  font-size:34px;
-  max-width:420px;
-  color:#111;
-}
+/* PRODUCTS */
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;}
+.product{background:white;padding:15px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05);} 
+.product img{width:100%;height:150px;object-fit:cover;border-radius:8px;}
+.product h3{margin:10px 0;}
+.product p{color:#666;}
+button{margin-top:8px;padding:8px;border:none;background:#ff9900;color:white;border-radius:5px;cursor:pointer;width:100%;}
 
-.cards{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:20px;
-}
+/* CART */
+.cart{background:white;padding:15px;border-radius:10px;margin-top:20px;}
+.cart-item{display:flex;justify-content:space-between;align-items:center;margin:10px 0;}
+.cart-item button{width:auto;padding:5px 10px;margin-left:5px;}
 
-.card{
-  background:white;
-  border-radius:20px;
-  padding:20px;
-}
+/* ADMIN */
+.admin{background:white;padding:15px;border-radius:10px;margin-top:20px;}
+.admin input{margin:5px 0;padding:8px;width:100%;}
 
-.stats{
-  background:#c9b8a6;
-  color:white;
-}
-
-.section{margin-top:40px;}
-.section h2{margin-bottom:20px;color:#333;}
-
-.steps{
-  display:flex;
-  gap:10px;
-}
-
-.step{
-  flex:1;
-  background:white;
-  border-radius:20px;
-  padding:20px;
-}
-.step img{
-  width:100%;
-  border-radius:15px;
-  margin-top:10px;
-}
-
-/* CAROUSEL */
-.carousel-wrapper{
-  overflow:hidden;
-}
-
-.carousel-track{
-  display:flex;
-  gap:10px;
-  width:max-content;
-  animation:scroll 60s linear infinite; /* SLOW */
-}
-
-.review{
-  min-width:280px;
-  background:white;
-  padding:20px;
-  border-radius:20px;
-}
-
-@keyframes scroll{
-  0%{transform:translateX(0);}
-  100%{transform:translateX(-50%);}
-}
-
-.footer{
-  text-align:center;
-  margin-top:40px;
-  color:#777;
-}
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
 <nav>
-  <h3>Chitralok Frames</h3>
-  <ul>
-    <li><a href="#">Home</a></li>
-    <li><a href="#">Gallery</a></li>
-    <li><a href="#">Artists</a></li>
-    <li><a href="#">Contact</a></li>
-  </ul>
+  <h2>Chitralok Store</h2>
 </nav>
 
-<div class="hero">
-  <h1>Bringing Creativity Into The Art World</h1>
+<!-- PRODUCTS -->
+<div class="products" id="products"></div>
+
+<!-- CART -->
+<div class="cart">
+  <h3>Cart</h3>
+  <div id="cartItems"></div>
+  <h4>Total: ₹<span id="total">0</span></h4>
+  <button onclick="checkout()">Checkout</button>
 </div>
 
-<div class="cards">
-  <div class="card stats">
-    <h2>150+</h2>
-    <p>Artworks Displayed</p>
-  </div>
-
-  <div class="card">
-    <h3>Who We Are</h3>
-    <p>We curate modern and classic artworks from talented artists around the world.</p>
-  </div>
-</div>
-
-<div class="section">
-  <h2>How We Showcase Art</h2>
-  <div class="steps">
-    <div class="step">
-      <h3>Exhibitions</h3>
-      <img src="https://images.unsplash.com/photo-1504196606672-aef5c9cefc92">
-    </div>
-    <div class="step">
-      <h3>Collections</h3>
-      <img src="https://images.unsplash.com/photo-1492724441997-5dc865305da7">
-    </div>
-    <div class="step">
-      <h3>Digital Gallery</h3>
-      <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee">
-    </div>
-  </div>
-</div>
-
-<div class="section">
-  <h2>Customer Reviews</h2>
-  <div class="carousel-wrapper">
-    <div class="carousel-track">
-
-      <!-- SET 1 -->
-      <div class="review">⭐⭐⭐⭐⭐<br><br>"Best service, good quality & we are happy"<br><br>– Pratik</div>
-      <div class="review">⭐⭐⭐⭐⭐<br><br>"Loved the frame quality"<br><br>– Gauri</div>
-      <div class="review">⭐⭐⭐⭐⭐<br><br>"Excellent craftsmanship"<br><br>– Ajay</div>
-      <div class="review">⭐⭐⭐⭐⭐<br><br>"Elegant and premium look"<br><br>– Vishal</div>
-      <div class="review">⭐⭐⭐⭐⭐<br><br>"Customization is very good"<br><br>– Akshay</div>
-
-      <!-- DUPLICATE -->
-      <div class="review">⭐⭐⭐⭐⭐<br><br>"Best service, good quality & we are happy"<br><br>– Pratik</div>
-      <div class="review">⭐⭐⭐⭐⭐<br><br>"Loved the frame quality"<br><br>– Gauri</div>
-      <div class="review">⭐⭐⭐⭐⭐<br><br>"Excellent craftsmanship"<br><br>– Ajay</div>
-      <div class="review">⭐⭐⭐⭐⭐<br><br>"Elegant and premium look"<br><br>– Vishal</div>
-      <div class="review">⭐⭐⭐⭐⭐<br><br>"Customization is very good"<br><br>– Akshay</div>
-
-    </div>
-  </div>
-</div>
-
-<div class="footer">
-  <p>© 2026 ArtSpace Gallery</p>
+<!-- ADMIN PANEL -->
+<div class="admin">
+  <h3>Admin Panel</h3>
+  <input id="name" placeholder="Product Name">
+  <input id="price" placeholder="Price" type="number">
+  <input id="img" placeholder="Image URL">
+  <button onclick="addProduct()">Add Product</button>
 </div>
 
 </div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+
+let products = JSON.parse(localStorage.getItem('products')) || [
+  {name:'Shivaji Frame',price:1500,img:'https://images.unsplash.com/photo-1504196606672-aef5c9cefc92'},
+  {name:'Swami Frame',price:1200,img:'https://images.unsplash.com/photo-1492724441997-5dc865305da7'}
+];
+
+let cart = [];
+
+function renderProducts(){
+  let html='';
+  products.forEach((p,i)=>{
+    html+=`<div class="product">
+      <img src="${p.img}">
+      <h3>${p.name}</h3>
+      <p>₹${p.price}</p>
+      <button onclick="addToCart(${i})">Add to Cart</button>
+    </div>`;
+  });
+  document.getElementById('products').innerHTML=html;
+}
+
+function addProduct(){
+  let name=document.getElementById('name').value;
+  let price=document.getElementById('price').value;
+  let img=document.getElementById('img').value;
+
+  products.push({name,price,img});
+  localStorage.setItem('products',JSON.stringify(products));
+  renderProducts();
+}
+
+function addToCart(i){
+  let item = products[i];
+  let found = cart.find(c=>c.name===item.name);
+
+  if(found){found.qty++;}
+  else{cart.push({...item,qty:1});}
+
+  renderCart();
+}
+
+function renderCart(){
+  let html='';
+  let total=0;
+
+  cart.forEach((item,i)=>{
+    total+=item.price*item.qty;
+    html+=`<div class="cart-item">
+      ${item.name} x${item.qty} - ₹${item.price*item.qty}
+      <div>
+        <button onclick="changeQty(${i},1)">+</button>
+        <button onclick="changeQty(${i},-1)">-</button>
+        <button onclick="removeItem(${i})">x</button>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('cartItems').innerHTML=html;
+  document.getElementById('total').innerText=total;
+}
+
+function changeQty(i,val){
+  cart[i].qty+=val;
+  if(cart[i].qty<=0) cart.splice(i,1);
+  renderCart();
+}
+
+function removeItem(i){
+  cart.splice(i,1);
+  renderCart();
+}
+
+function checkout(){
+  let total=0;
+  cart.forEach(i=> total+=i.price*i.qty);
+
+  // store order locally (demo database)
+  let orders = JSON.parse(localStorage.getItem('orders')) || [];
+  orders.push({cart,total,date:new Date()});
+  localStorage.setItem('orders',JSON.stringify(orders));
+
+  var options={
+    key:"YOUR_RAZORPAY_KEY",
+    amount: total*100,
+    currency:"INR",
+    name:"Chitralok",
+    description:"Order Payment",
+    handler:function(){alert('Payment Successful');}
+  };
+
+  var rzp=new Razorpay(options);
+  rzp.open();
+}
+
+renderProducts();
+</script>
 
 </body>
 </html>
