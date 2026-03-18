@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI',sans-serif;
+}
+
+body{
+  background:#f2f2f2;
+}
+
+.container{
+  max-width:1000px;
+  margin:30px auto;
+  padding:10px;
+}
+
+/* NAV */
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:white;
+  padding:15px 20px;
+  border-radius:12px;
+  margin-bottom:20px;
+}
+
+.back{
+  text-decoration:none;
+  color:#111;
+  font-size:14px;
+}
+
+/* CART ITEMS */
+.cart-item{
+  background:white;
+  display:grid;
+  grid-template-columns:70px 1fr 120px 100px 40px;
+  align-items:center;
+  gap:10px;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:10px;
+}
+
+.cart-item img{
+  width:60px;
+  height:60px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+.name{
+  font-size:14px;
+}
+
+.price{
+  font-size:13px;
+  color:#666;
+}
+
+/* QTY */
+.qty{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.qty button{
+  width:28px;
+  height:28px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  background:#eee;
+}
+
+/* REMOVE */
+.remove{
+  color:red;
+  font-size:18px;
+  cursor:pointer;
+  text-align:center;
+}
+
+/* SUMMARY */
+.summary{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  margin-top:20px;
+}
+
+.summary h3{
+  display:flex;
+  justify-content:space-between;
+  margin:10px 0;
+}
+
+/* CHECKOUT */
+.checkout{
+  width:100%;
+  padding:12px;
+  margin-top:15px;
+  border:none;
+  border-radius:10px;
+  background:#25D366;
+  color:white;
+  cursor:pointer;
+  font-size:16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<nav>
+  <h2>My Cart</h2>
+  <a href="../store/index.html" class="back">← Continue Shopping</a>
+</nav>
+
+<div id="cartItems"></div>
+
+<div class="summary" id="summary"></div>
+
+<button class="checkout" onclick="checkout()">Order on WhatsApp</button>
+
+</div>
+
+<script>
+
+/* LOAD CART */
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+/* SAVE */
+function saveCart(){
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+/* RENDER CART */
+function renderCart(){
+  let html = "";
+  let total = 0;
+
+  if(cart.length === 0){
+    html = "<p>Your cart is empty</p>";
+    document.getElementById("summary").innerHTML = "";
+  }
+
+  cart.forEach((item,i)=>{
+    let itemTotal = item.price * item.qty;
+    total += itemTotal;
+
+    html += `
+      <div class="cart-item">
+        <img src="${item.img}">
+
+        <div>
+          <div class="name">${item.name}</div>
+          <div class="price">₹${item.price}</div>
+        </div>
+
+        <div class="qty">
+          <button onclick="changeQty(${i},-1)">−</button>
+          ${item.qty}
+          <button onclick="changeQty(${i},1)">+</button>
+        </div>
+
+        <div>₹${itemTotal}</div>
+
+        <div class="remove" onclick="removeItem(${i})">×</div>
+      </div>
+    `;
+  });
+
+  document.getElementById("cartItems").innerHTML = html;
+
+  if(cart.length > 0){
+    document.getElementById("summary").innerHTML = `
+      <h3>Subtotal <span>₹${total}</span></h3>
+      <h3>Shipping <span>Free</span></h3>
+      <h3><b>Total</b> <span><b>₹${total}</b></span></h3>
+    `;
+  }
+}
+
+/* CHANGE QTY */
+function changeQty(i,val){
+  cart[i].qty += val;
+
+  if(cart[i].qty <= 0){
+    cart.splice(i,1);
+  }
+
+  saveCart();
+  renderCart();
+}
+
+/* REMOVE */
+function removeItem(i){
+  cart.splice(i,1);
+  saveCart();
+  renderCart();
+}
+
+/* WHATSAPP CHECKOUT */
+function checkout(){
+  if(cart.length === 0){
+    alert("Cart is empty!");
+    return;
+  }
+
+  let message = "🛒 *New Order - Chitralok Arts*%0A%0A";
+  let total = 0;
+
+  cart.forEach(item => {
+    message += `• ${item.name} x ${item.qty} = ₹${item.price * item.qty}%0A`;
+    total += item.price * item.qty;
+  });
+
+  message += `%0A💰 Total: ₹${total}`;
+
+  let phone = "9167878131";
+
+  window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+}
+
+/* INIT */
+renderCart();
+
+</script>
+
+</body>
+</html>
