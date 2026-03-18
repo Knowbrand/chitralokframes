@@ -1,247 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Premium Admin Panel</title>
-
+<title>Admin Login</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
 body{
-  background:linear-gradient(135deg,#cfd9df,#e2ebf0);
   display:flex;
+  justify-content:center;
+  align-items:center;
   height:100vh;
-}
-
-/* SIDEBAR */
-.sidebar{
-  width:240px;
-  background:rgba(255,255,255,0.4);
-  backdrop-filter:blur(20px);
-  padding:20px;
-  border-radius:20px;
-  margin:20px;
-}
-
-.sidebar h2{
-  margin-bottom:30px;
-}
-
-.sidebar a{
-  display:block;
-  padding:10px;
-  margin-bottom:10px;
-  border-radius:10px;
-  color:#333;
-  text-decoration:none;
-  transition:0.3s;
-}
-
-.sidebar a:hover{
-  background:rgba(255,255,255,0.6);
-}
-
-/* MAIN */
-.main{
-  flex:1;
-  margin:20px;
-  padding:20px;
-  background:rgba(255,255,255,0.5);
-  backdrop-filter:blur(20px);
-  border-radius:20px;
-  overflow:auto;
-}
-
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-}
-
-.logout{
-  background:#ff4d4d;
+  background:#111;
   color:white;
-  border:none;
-  padding:8px 15px;
-  border-radius:10px;
-  cursor:pointer;
+  font-family:sans-serif;
 }
-
-/* CARDS */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:15px;
-}
-
-.card{
-  background:rgba(255,255,255,0.7);
-  padding:20px;
-  border-radius:20px;
-  box-shadow:0 10px 20px rgba(0,0,0,0.05);
-}
-
-/* FORM */
-.form{
-  margin-top:20px;
-  background:rgba(255,255,255,0.7);
-  padding:20px;
-  border-radius:20px;
-}
-
-.form input{
-  padding:10px;
-  margin:5px;
-  border-radius:10px;
-  border:1px solid #ddd;
-}
-
-.form button{
-  padding:10px 15px;
-  border:none;
-  border-radius:10px;
-  background:#333;
-  color:white;
-  cursor:pointer;
-}
-
-/* PRODUCT LIST */
-.product{
-  background:rgba(255,255,255,0.7);
-  padding:15px;
+.box{
+  background:#222;
+  padding:30px;
   border-radius:15px;
-  margin-top:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  text-align:center;
 }
-
-.product button{
-  margin-left:5px;
-  padding:6px 10px;
+input{
+  padding:10px;
   border:none;
   border-radius:8px;
+  margin-top:10px;
+}
+button{
+  margin-top:10px;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#c9b8a6;
+  color:white;
   cursor:pointer;
 }
-
-.stock{background:#c9b8a6;color:white;}
-.delete{background:red;color:white;}
 </style>
-
-<script>
-if(sessionStorage.getItem("admin") !== "true"){
-  window.location.replace("../index.html");
-}
-</script>
-
 </head>
 
 <body>
 
-<div class="sidebar">
-  <h2>Admin</h2>
-  <a href="#">Dashboard</a>
-  <a href="#">Products</a>
-</div>
-
-<div class="main">
-
-<div class="topbar">
-  <h2>Dashboard</h2>
-  <button class="logout" onclick="logout()">Logout</button>
-</div>
-
-<div class="grid">
-  <div class="card">
-    <h3 id="totalProducts">0</h3>
-    <p>Total Products</p>
-  </div>
-  <div class="card">
-    <h3 id="stockCount">0</h3>
-    <p>In Stock</p>
-  </div>
-</div>
-
-<div class="form">
-  <h3>Add Product</h3>
-  <input id="name" placeholder="Product Name">
-  <input id="price" placeholder="Price">
-  <input id="img" placeholder="Image URL">
-  <button onclick="addProduct()">Add</button>
-</div>
-
-<div id="list"></div>
-
+<div class="box">
+  <h2>Enter Password</h2>
+  <input type="password" id="pass" placeholder="Password"><br>
+  <button onclick="check()">Login</button>
 </div>
 
 <script>
-let products = JSON.parse(localStorage.getItem("products")) || [];
-
-function save(){
-  localStorage.setItem("products", JSON.stringify(products));
-}
-
-function render(){
-  let html = "";
-  let stock = 0;
-
-  products.forEach((p,i)=>{
-    if(!p.out) stock++;
-
-    html += `
-      <div class="product">
-        <div>
-          <b>${p.name}</b><br>
-          ₹${p.price} ${p.out ? "(Out of Stock)" : ""}
-        </div>
-
-        <div>
-          <button class="stock" onclick="toggleStock(${i})">Stock</button>
-          <button class="delete" onclick="deleteProduct(${i})">Delete</button>
-        </div>
-      </div>
-    `;
-  });
-
-  document.getElementById("list").innerHTML = html;
-  document.getElementById("totalProducts").innerText = products.length;
-  document.getElementById("stockCount").innerText = stock;
-}
-
-function addProduct(){
-  let name = document.getElementById("name").value;
-  let price = document.getElementById("price").value;
-  let img = document.getElementById("img").value;
-
-  if(!name || !price || !img){
-    alert("Fill all fields");
-    return;
+function check(){
+  if(document.getElementById("pass").value === "1234"){
+    sessionStorage.setItem("admin","true");
+    window.location.href = "panel/index.html";
+  } else {
+    window.location.href = "../index.html";
   }
-
-  products.push({name,price,img,out:false});
-  save();
-  render();
 }
-
-function deleteProduct(i){
-  products.splice(i,1);
-  save();
-  render();
-}
-
-function toggleStock(i){
-  products[i].out = !products[i].out;
-  save();
-  render();
-}
-
-function logout(){
-  sessionStorage.removeItem("admin");
-  window.location.replace("../index.html");
-}
-
-render();
 </script>
 
 </body>
