@@ -85,6 +85,8 @@ nav a{text-decoration:none;color:#555;font-size:14px;}
 .steps{
   display:flex;
   gap:10px;
+  max-width:900px;
+  margin:auto;
 }
 
 .step{
@@ -104,6 +106,17 @@ nav a{text-decoration:none;color:#555;font-size:14px;}
   width:100%;
   border-radius:15px;
   margin-top:10px;
+}
+
+.step-link{
+  flex:1;
+  display:block;
+  text-decoration:none;
+  color:inherit;
+}
+
+.step-link .step{
+  height:100%;
 }
 
 /* CAROUSEL */
@@ -171,7 +184,7 @@ nav a{text-decoration:none;color:#555;font-size:14px;}
 <div class="section">
   <h2>How We Showcase Art</h2>
   <div class="steps">
-    <a href="store.html" style="text-decoration:none;color:inherit;">
+    <a href="store/" class="step-link">
     <div class="step">
       <h3>Store</h3>
       <img src="https://images.unsplash.com/photo-1504196606672-aef5c9cefc92">
