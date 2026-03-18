@@ -9,6 +9,17 @@ input,button{padding:10px;margin:5px;}
 </style>
 </head>
 
+<script>
+const password = "1234"; // change this
+
+let userPass = prompt("Enter Admin Password");
+
+if(userPass !== password){
+  alert("Access Denied");
+  window.location.href = "../index.html";
+}
+</script>
+  
 <body>
 
 <h2>Product Manager</h2>
