@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Checkout</title>
+<style>
+body{font-family:Arial;background:#f2f2f2;padding:20px;}
+
+.box{
+  background:white;
+  padding:20px;
+  max-width:500px;
+  margin:auto;
+  border-radius:10px;
+}
+
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+button{
+  padding:10px;
+  background:black;
+  color:white;
+  border:none;
+  width:100%;
+  border-radius:6px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Enter Details</h2>
+
+  <input id="name" placeholder="Full Name">
+  <input id="phone" placeholder="Phone Number">
+  <textarea id="address" placeholder="Full Address"></textarea>
+
+  <button onclick="placeOrder()">Place Order</button>
+</div>
+
+<script>
+function placeOrder(){
+
+  let name = document.getElementById("name").value;
+  let phone = document.getElementById("phone").value;
+  let address = document.getElementById("address").value;
+
+  if(!name || !phone || !address){
+    alert("Fill all details");
+    return;
+  }
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  let message = "🛒 *New Order*%0A%0A";
+
+  message += `👤 Name: ${name}%0A`;
+  message += `📞 Phone: ${phone}%0A`;
+  message += `📍 Address: ${address}%0A%0A`;
+
+  let total = 0;
+
+  cart.forEach(item=>{
+    message += `• ${item.name} x ${item.qty} = ₹${item.price * item.qty}%0A`;
+    total += item.price * item.qty;
+  });
+
+  message += `%0A💰 Total: ₹${total}`;
+
+  window.open(`https://wa.me/9167878131?text=${message}`);
+
+  // Optional: save locally (demo)
+  localStorage.setItem("lastOrder", JSON.stringify({name, phone, address, cart}));
+
+  // redirect
+  window.location.href = "../invoice/index.html";
+}
+</script>
+
+</body>
+</html>
