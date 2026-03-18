@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chitralok Store</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:#f2f2f2;}
+
+.container{
+  max-width:1200px;
+  margin:20px auto;
+  padding:10px;
+}
+
+/* NAV */
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:white;
+  padding:15px 20px;
+  border-radius:12px;
+  margin-bottom:20px;
+}
+
+/* PRODUCTS */
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:15px;
+}
+
+.product{
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  transition:0.3s;
+}
+.product:hover{
+  transform:translateY(-5px);
+}
+
+.product img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+.product h3{margin:10px 0;}
+.product p{color:#555;}
+
+button{
+  margin-top:10px;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#c9b8a6;
+  color:white;
+  cursor:pointer;
+  width:100%;
+}
+
+/* CART */
+.cart{
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  margin-top:25px;
+}
+
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:10px 0;
+  gap:10px;
+}
+
+.controls button{
+  width:auto;
+  padding:5px 10px;
+  margin-left:5px;
+}
+
+/* CHECKOUT */
+.checkout-btn{
+  margin-top:15px;
+  background:#111;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<nav>
+  <h2>Chitralok Store</h2>
+  <a href="index.html">← Back</a>
+</nav>
+
+<!-- PRODUCTS -->
+<div class="products" id="products"></div>
+
+<!-- CART -->
+<div class="cart">
+  <h3>Your Cart</h3>
+  <div id="cartItems"></div>
+  <h3>Total: ₹<span id="total">0</span></h3>
+  <button class="checkout-btn" onclick="checkout()">Checkout</button>
+</div>
+
+</div>
+
+<!-- Razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+let products = [
+  {name:"Shivaji Maharaj Frame", price:1500, img:"https://images.unsplash.com/photo-1504196606672-aef5c9cefc92"},
+  {name:"Swami Samarth Frame", price:1200, img:"https://images.unsplash.com/photo-1492724441997-5dc865305da7"},
+  {name:"Custom Photo Frame", price:2000, img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"}
+];
+
+let cart = [];
+
+/* RENDER PRODUCTS */
+function renderProducts(){
+  let html="";
+  products.forEach((p,i)=>{
+    html += `
+      <div class="product">
+        <img src="${p.img}">
+        <h3>${p.name}</h3>
+        <p>₹${p.price}</p>
+        <button onclick="addToCart(${i})">Add to Cart</button>
+      </div>
+    `;
+  });
+  document.getElementById("products").innerHTML = html;
+}
+
+/* ADD TO CART */
+function addToCart(i){
+  let item = products[i];
+  let found = cart.find(c => c.name === item.name);
+
+  if(found){
+    found.qty++;
+  } else {
+    cart.push({...item, qty:1});
+  }
+
+  renderCart();
+}
+
+/* RENDER CART */
+function renderCart(){
+  let html = "";
+  let total = 0;
+
+  cart.forEach((item,i)=>{
+    total += item.price * item.qty;
+
+    html += `
+      <div class="cart-item">
+        <div>
+          ${item.name}<br>
+          ₹${item.price} x ${item.qty}
+        </div>
+
+        <div class="controls">
+          <button onclick="changeQty(${i},1)">+</button>
+          <button onclick="changeQty(${i},-1)">-</button>
+          <button onclick="removeItem(${i})">x</button>
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById("cartItems").innerHTML = html;
+  document.getElementById("total").innerText = total;
+}
+
+/* CHANGE QTY */
+function changeQty(i,val){
+  cart[i].qty += val;
+  if(cart[i].qty <= 0) cart.splice(i,1);
+  renderCart();
+}
+
+/* REMOVE ITEM */
+function removeItem(i){
+  cart.splice(i,1);
+  renderCart();
+}
+
+/* CHECKOUT */
+function checkout(){
+  let total = 0;
+  cart.forEach(i => total += i.price * i.qty);
+
+  var options = {
+    key: "YOUR_RAZORPAY_KEY",
+    amount: total * 100,
+    currency: "INR",
+    name: "Chitralok Arts",
+    description: "Order Payment",
+    handler: function(){
+      alert("Payment Successful!");
+    }
+  };
+
+  var rzp = new Razorpay(options);
+  rzp.open();
+}
+
+renderProducts();
+</script>
+
+</body>
+</html>
